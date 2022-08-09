@@ -1,0 +1,7 @@
+project: sn0int
+target: image-load
+
+cmds:
+  - cmd: /image_load
+  - cmd: /image_load_no_inst @@
+    libfuzzer: false

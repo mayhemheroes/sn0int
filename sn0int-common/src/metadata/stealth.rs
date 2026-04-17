@@ -1,8 +1,9 @@
 use crate::errors::*;
-use serde::{Serialize, Deserialize};
+use clap::ValueEnum;
+use serde::{Deserialize, Serialize};
 use std::str::FromStr;
 
-#[derive(Debug, Eq, PartialEq, PartialOrd, Clone, Serialize, Deserialize)]
+#[derive(Debug, Eq, PartialEq, PartialOrd, Clone, ValueEnum, Serialize, Deserialize)]
 pub enum Stealth {
     Loud,
     Normal,
@@ -13,12 +14,7 @@ pub enum Stealth {
 impl Stealth {
     #[inline]
     pub fn variants() -> &'static [&'static str] {
-        &[
-            "loud",
-            "normal",
-            "passive",
-            "offline",
-        ]
+        &["loud", "normal", "passive", "offline"]
     }
 
     #[inline(always)]

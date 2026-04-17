@@ -7,26 +7,23 @@ use crate::errors::*;
 use crate::models::*;
 use crate::shell::{self, Shell};
 use crate::workspaces;
-use humansize::{FileSize, file_size_opts};
 use separator::Separatable;
 use serde::{Serialize, Deserialize};
-use structopt::StructOpt;
-use structopt::clap::AppSettings;
+use clap::Parser;
 
-#[derive(Debug, Clone, StructOpt)]
-#[structopt(global_settings = &[AppSettings::ColoredHelp])]
+#[derive(Debug, Clone, Parser)]
 pub struct Args {
     /// Exclude blob storage
-    #[structopt(short, long)]
+    #[arg(short, long)]
     short: bool,
     /// Exclude categories that don't contain any structs
-    #[structopt(short, long)]
+    #[arg(short, long)]
     quiet: bool,
     /// Show workspace statistics in json
-    #[structopt(short, long)]
+    #[arg(short, long)]
     json: bool,
     /// Go through all workspaces
-    #[structopt(short, long)]
+    #[arg(short, long)]
     all: bool,
 }
 
@@ -116,8 +113,7 @@ impl Stats {
             total_size += storage.stat(blob)?;
         }
 
-        let total_human_size = total_size.file_size(file_size_opts::CONVENTIONAL)
-            .map_err(|e| format_err!("Failed to format size: {}", e))?;
+        let total_human_size = humansize::format_size(total_size, humansize::BINARY);
 
         self.blobs = Some(BlobStats {
             count: blobs.len(),

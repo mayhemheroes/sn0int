@@ -38,7 +38,7 @@ pub trait State {
 
     fn recv(&self) -> Result<serde_json::Value>;
 
-    fn verbose(&self) -> u64;
+    fn verbose(&self) -> u8;
 
     #[inline]
     fn info(&self, msg: String) {
@@ -208,7 +208,7 @@ pub struct LuaState {
     http_sessions: Mutex<HashMap<String, HttpSession>>,
     http_clients: Mutex<HashMap<String, Arc<chrootable_https::Client<Resolver>>>>,
 
-    verbose: u64,
+    verbose: u8,
     keyring: Vec<KeyRingEntry>, // TODO: maybe hashmap
     dns_config: Resolver,
     psl: Mutex<Lazy<PslReader, Arc<Psl>>>,
@@ -247,7 +247,7 @@ impl State for LuaState {
         tx.recv()
     }
 
-    fn verbose(&self) -> u64 {
+    fn verbose(&self) -> u8 {
         self.verbose
     }
 
@@ -300,7 +300,7 @@ impl State for LuaState {
         let id = self.random_id();
 
         let sock = if let Some(proxy) = self.resolve_proxy_options(&options.proxy)? {
-            Socket::connect_socks5(proxy, host, port, options)?
+            Socket::connect_socks5(*proxy, host, port, options)?
         } else {
             Socket::connect(&self.dns_config, host, port, options)?
         };

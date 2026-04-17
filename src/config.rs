@@ -21,7 +21,7 @@ pub struct Config {
 impl Config {
     pub fn load() -> Result<Config> {
         let path = Config::path()?;
-        Config::load_from(&path)
+        Config::load_from(path)
     }
 
     pub fn path() -> Result<PathBuf> {
@@ -41,10 +41,10 @@ impl Config {
     }
 
     pub fn load_from<P: AsRef<Path>>(path: P) -> Result<Config> {
-        let config = fs::read(&path)
+        let config = fs::read_to_string(&path)
             .context("Failed to read config file")?;
 
-        let config = toml::from_slice(&config)?;
+        let config = toml::from_str(&config)?;
 
         Ok(config)
     }

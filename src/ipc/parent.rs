@@ -47,7 +47,7 @@ impl IpcParent {
     }
 
     pub fn send_start(&mut self, start: &StartCommand) -> Result<()> {
-        let start = serde_json::to_value(&start)?;
+        let start = serde_json::to_value(start)?;
         self.send(&start)?;
         Ok(())
     }
@@ -70,6 +70,10 @@ impl IpcParent {
     pub fn recv(&mut self) -> Result<Event> {
         let mut line = String::new();
         let len = self.stdout.read_line(&mut line)?;
+
+        if len == 0 {
+            bail!("Sandbox child has crashed");
+        }
 
         let event = serde_json::from_str(&line[..len])?;
         debug!("IpcParent received: {:?}", event);
@@ -102,7 +106,7 @@ pub fn run(module: Module,
            tx: &EventSender,
            arg: serde_json::Value,
            keyring: Vec<KeyRingEntry>,
-           verbose: u64,
+           verbose: u8,
            has_stdin: bool,
            proxy: Option<SocketAddr>,
            user_agent: Option<String>,

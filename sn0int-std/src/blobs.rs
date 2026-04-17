@@ -1,8 +1,9 @@
-use bytes::Bytes;
 use blake2::Blake2bVar;
+use bytes::Bytes;
+use data_encoding::BASE64;
 use digest::{Update, VariableOutput};
-use serde::ser::{Serialize, Serializer};
 use serde::de::{self, Deserialize, Deserializer};
+use serde::ser::{Serialize, Serializer};
 use std::result;
 
 #[derive(Debug, Clone, PartialEq)]
@@ -14,10 +15,7 @@ pub struct Blob {
 impl Blob {
     pub fn create(bytes: Bytes) -> Blob {
         let id = Self::hash(&bytes);
-        Blob {
-            id,
-            bytes,
-        }
+        Blob { id, bytes }
     }
 
     pub fn hash(bytes: &[u8]) -> String {
@@ -40,7 +38,7 @@ impl Serialize for Blob {
     where
         S: Serializer,
     {
-        let s = base64::encode(&self.bytes);
+        let s = BASE64.encode(&self.bytes);
         serializer.serialize_str(&s)
     }
 }
@@ -52,8 +50,7 @@ impl<'de> Deserialize<'de> for Blob {
         D: Deserializer<'de>,
     {
         let s = String::deserialize(deserializer)?;
-        let bytes = base64::decode(&s)
-            .map_err(de::Error::custom)?;
+        let bytes = BASE64.decode(s.as_bytes()).map_err(de::Error::custom)?;
         Ok(Blob::create(Bytes::from(bytes)))
     }
 }
@@ -61,7 +58,6 @@ impl<'de> Deserialize<'de> for Blob {
 pub trait BlobState {
     fn register_blob(&self, blob: Blob) -> String;
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -77,10 +73,13 @@ mod tests {
     #[test]
     fn verify_create_blob() {
         let (bytes, blob) = blob();
-        assert_eq!(blob, Blob {
-            id: String::from("DTTV3EjpHBNJx3Zw7eJsVPm4bYXKmNkJQpVNkcvTtTSz"),
-            bytes,
-        });
+        assert_eq!(
+            blob,
+            Blob {
+                id: String::from("DTTV3EjpHBNJx3Zw7eJsVPm4bYXKmNkJQpVNkcvTtTSz"),
+                bytes,
+            }
+        );
     }
 
     #[test]

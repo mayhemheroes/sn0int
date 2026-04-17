@@ -1,24 +1,22 @@
-use crate::errors::*;
-
-use crate::cmd::Cmd;
-use crate::shell::Shell;
-use crate::models::*;
 use chrono::{Utc, NaiveDateTime, NaiveTime, Duration};
+use clap::Parser;
+use crate::cmd::Cmd;
+use crate::errors::*;
+use crate::models::*;
+use crate::shell::Shell;
 use regex::Regex;
 use std::convert::TryFrom;
 use std::io;
 use std::str::FromStr;
-use structopt::StructOpt;
-use structopt::clap::AppSettings;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct TimeSpec {
     datetime: NaiveDateTime,
 }
 
 impl TimeSpec {
     fn resolve(s: &str, now: NaiveDateTime) -> Result<Self> {
-        let today = NaiveDateTime::new(now.date(), NaiveTime::from_hms(0, 0, 0));
+        let today = NaiveDateTime::new(now.date(), NaiveTime::from_hms_opt(0, 0, 0).expect("Invalid hour/min/sec"));
 
         let datetime = match s {
             "today" => today,
@@ -64,23 +62,22 @@ impl FromStr for TimeSpec {
     }
 }
 
-#[derive(Debug, StructOpt)]
-#[structopt(global_settings = &[AppSettings::ColoredHelp])]
+#[derive(Debug, Parser)]
 pub struct Args {
     /// Only query events for a given topic
-    #[structopt(short="t", long="topic")]
+    #[arg(short = 't', long="topic")]
     topic: Option<String>,
     /// Only query events starting from that datetime
-    #[structopt(long="since")]
+    #[arg(long="since")]
     since: Option<TimeSpec>,
     /// Only query events until this datetime
-    #[structopt(long="until")]
+    #[arg(long="until")]
     until: Option<TimeSpec>,
     /// Try to select the previous event before --since as an initial state
-    #[structopt(short="i", long="initial")]
+    #[arg(short = 'i', long="initial")]
     initial: bool,
     /// Only query events that are tied to a location
-    #[structopt(short="l", long="location")]
+    #[arg(short = 'l', long="location")]
     location: bool,
 }
 
@@ -122,8 +119,8 @@ mod tests {
     use super::*;
 
     fn datetime() -> NaiveDateTime {
-        let date = chrono::NaiveDate::from_ymd(2020, 3, 14);
-        let time = chrono::NaiveTime::from_hms(16, 20, 23);
+        let date = chrono::NaiveDate::from_ymd_opt(2020, 3, 14).unwrap();
+        let time = chrono::NaiveTime::from_hms_opt(16, 20, 23).unwrap();
         NaiveDateTime::new(date, time)
     }
 

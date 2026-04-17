@@ -30,7 +30,7 @@ pub use sn0int_std::engine::structs;
 /// Data that is passed to every script
 #[derive(Debug)]
 pub struct Environment {
-    pub verbose: u64,
+    pub verbose: u8,
     pub keyring: Vec<KeyRingEntry>,
     pub dns_config: Resolver,
     pub proxy: Option<SocketAddr>,
@@ -77,7 +77,7 @@ impl<'a> Library<'a> {
     }
 
     pub fn private_modules(path: &Path) -> Result<bool> {
-        let metadata = fs::symlink_metadata(&path)?.file_type();
+        let metadata = fs::symlink_metadata(path)?.file_type();
         if metadata.is_symlink() {
             debug!("Folder is a symlink, flagging modules as private");
             return Ok(true);

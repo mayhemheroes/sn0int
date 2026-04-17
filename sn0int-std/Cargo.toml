@@ -1,11 +1,11 @@
 [package]
 name = "sn0int-std"
-version = "0.24.2"
+version = "0.26.0"
 description = "sn0int - stdlib"
 authors = ["kpcyrd <git@rxv.cc>"]
 repository = "https://github.com/kpcyrd/sn0int"
 license = "GPL-3.0"
-edition = "2018"
+edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -27,7 +27,7 @@ ct-logs = "0.7"
 chrootable-https = "0.16"
 http = "0.2"
 bufstream = "0.1.4"
-pem = "1"
+pem = "3"
 url = "2.0"
 tungstenite = { version = "0.13", default-features = false }
 kuchiki = "0.8.0"
@@ -36,9 +36,8 @@ x509-parser = "0.13"
 der-parser = "8"
 publicsuffix = { version="2", default-features=false }
 xml-rs = "0.8"
-geo = "0.20"
+geo = "0.25"
 bytes = "0.4"
-base64 = "0.13"
 chrono = { version = "0.4", features = ["serde"] }
 mqtt-protocol = "0.11"
 sodiumoxide = { version="0.2.5", features=["use-pkg-config"] }
@@ -47,10 +46,12 @@ image = "0.23"
 kamadak-exif = "0.5.1"
 img_hash_median = "4.0.0"
 
-bs58 = "0.4"
+bs58 = "0.5"
 digest = "0.10"
 blake2 = "0.10"
+data-encoding = "2.3.3"
+thiserror = "1.0.38"
 
 [dev-dependencies]
-env_logger = "0.9"
+env_logger = "0.10"
 maplit = "1.0.1"

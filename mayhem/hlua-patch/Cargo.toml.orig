@@ -1,0 +1,13 @@
+[package]
+name = "hlua-badtouch"
+version = "0.4.2"
+authors = ["pierre.krieger1708@gmail.com", "kpcyrd <git@rxv.cc>"]
+description = "badtouch specific fork of hlua"
+keywords = ["lua"]
+repository = "https://github.com/kpcyrd/hlua"
+documentation = "http://docs.rs/hlua-badtouch"
+license = "MIT"
+
+[dependencies]
+libc = "0.2"
+lua52-sys = { version = "0.1.1", path = "../lua52-sys" }

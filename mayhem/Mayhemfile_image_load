@@ -1,0 +1,7 @@
+project: sn0int
+target: image-load
+
+cmds:
+  - cmd: /mayhem/image_load
+    libfuzzer: true
+    timeout: 30

@@ -1,0 +1,9 @@
+# Build context pruning for mayhem/Dockerfile (BuildKit Dockerfile-specific override).
+# The root .dockerignore excludes .git, but the PATCH tier needs full git history in
+# the image (SPEC §6.2 item 2). This file takes precedence over the root .dockerignore
+# when building with -f mayhem/Dockerfile, so .git is kept.
+target/
+mayhem/fuzz/target/
+# Explicitly keep .git even if the root .dockerignore excludes it — full git history
+# is required by SPEC §6.2 item 2 and the PATCH tier.
+!.git

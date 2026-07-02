@@ -1,0 +1,27 @@
+[package]
+name = "sn0int-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2021"
+
+[package.metadata]
+cargo-fuzz = true
+
+[[bin]]
+name = "image_load"
+path = "fuzz_targets/image_load.rs"
+test = false
+doc = false
+
+[dependencies]
+libfuzzer-sys = "0.4"
+sn0int-std = { path = "../../sn0int-std" }
+
+# hlua-badtouch 0.4.2's open_* methods implicitly return the i32 from ffi::luaopen_*,
+# which is a type error on nightly-2025-07-01+. Patch the crate to discard the return value.
+[patch.crates-io]
+hlua-badtouch = { path = "../hlua-patch" }
+
+# Prevent this from being folded into the root workspace.
+[workspace]
+members = ["."]
